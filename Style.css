@@ -1,95 +1,128 @@
+/* ---------- base ---------- */
+* { box-sizing: border-box; }
 html, body {
   margin: 0;
   padding: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow: hidden; /* no scrolling */
   background-color: #f2f2f2;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* score / feedback */
 #score {
   position: absolute;
   top: 10px;
-  font-size: 1.2rem;
+  left: 12px;
+  font-size: 1.1rem;
   font-weight: bold;
+  z-index: 50;
 }
 
 #feedback {
   position: absolute;
   bottom: 10px;
-  font-size: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.1rem;
   font-weight: bold;
   color: #333;
+  z-index: 50;
 }
 
-#sound-btn {
+/* optional sound button (top-right) */
+#sound-btn, #replay-sound {
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 12px;
   background-color: white;
-  border: 2px solid #ccc;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.4rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 1rem;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  transition: background-color 0.2s ease;
+  z-index: 50;
 }
 
-#sound-btn:hover {
-  background-color: #e6e6e6;
-}
-
+/* ---------- game grid ---------- */
+/* Use viewport units carefully so everything fits */
 #game-grid {
+  position: relative;
   display: flex;
-  flex-direction: row;
+  gap: 12px;
   justify-content: space-evenly;
   align-items: center;
   width: 100%;
-  height: 70%; /* leave space for score/sound/feedback */
+  /* Reserve space for top/bottom UI (score + feedback) */
+  height: calc(100vh - 80px); /* adjust if you change top/bottom sizes */
   padding: 10px;
   box-sizing: border-box;
 }
 
+/* card containers: constrained so two cards always fit */
 .card-container {
-  flex: 0 0 45%; /* each card takes less width */
-  height: 90%;   /* reduced to fit without scrolling */
+  flex: 0 0 calc(50% - 18px); /* two cards side-by-side with gap */
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  overflow: hidden;
 }
 
+/* image sizing: ensure it never forces container bigger */
 .card-container img {
-  max-width: 90%;
-  max-height: 90%;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
 
-.card-container img:active {
-  transform: scale(0.96);
+/* smaller touch scale */
+.card-container img:active { transform: scale(0.97); }
+
+/* animation */
+.correct { animation: pop 0.4s ease; }
+@keyframes pop { 0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)} }
+
+/* ---------- responsiveness ---------- */
+/* Narrow screens — stack vertically and reduce heights */
+@media (max-width: 800px), (max-height: 500px) {
+  #game-grid {
+    flex-direction: column;
+    height: calc(100vh - 110px); /* more vertical room */
+    gap: 10px;
+    padding: 8px;
+  }
+
+  .card-container {
+    flex: 0 0 auto;
+    width: calc(100% - 20px);
+    height: 48%; /* two stacked cards ~ 48% each => both fit */
+    margin: 0 auto;
+  }
+
+  .card-container img { max-width: 100%; max-height: 100%; }
 }
 
-.correct {
-  animation: pop 0.4s ease;
+/* Very short screens (landscape phones) — force smaller images */
+@media (max-height: 420px) {
+  #game-grid { height: calc(100vh - 70px); }
+  .card-container { height: 44%; }
+  #score, #sound-btn, #replay-sound { font-size: 0.95rem; padding: 6px; }
 }
 
-@keyframes pop {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+/* Safety: clamp sizes on very large screens so image doesn't become enormous */
+@media (min-width: 1400px) {
+  .card-container { flex: 0 0 40%; max-width: 560px; }
 }
