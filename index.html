@@ -7,11 +7,23 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="score">Score: 0</div>
-  <button id="replay-sound">🔊 Replay Sound</button>
+
+  <!-- Top bar: score + replay sound -->
+  <div id="top-bar">
+    <div id="score">Score: 0</div>
+    <button id="replay-sound">🔊</button>
+  </div>
+
+  <!-- Game grid -->
   <div id="game-grid"></div>
+
+  <!-- Feedback message -->
   <div id="feedback"></div>
 
+  <!-- Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+  <!-- Game script -->
   <script src="script.js"></script>
 </body>
 </html>

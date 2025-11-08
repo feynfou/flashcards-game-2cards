@@ -12,43 +12,59 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* score / feedback */
-#score {
+/* ---------- top bar (score + sound) ---------- */
+#top-bar {
   position: absolute;
   top: 10px;
-  left: 12px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  z-index: 50;
-}
-
-#feedback {
-  position: absolute;
-  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 20px; /* space between score and sound button */
   z-index: 50;
 }
 
-/* optional sound button (top-right) */
-#sound-btn, #replay-sound {
-  position: absolute;
-  top: 10px;
-  right: 12px;
+#score {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+#replay-sound {
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 10px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: 1rem;
   cursor: pointer;
-  z-index: 50;
+  transition: background-color 0.2s ease;
+}
+
+#replay-sound:hover {
+  background-color: #e6e6e6;
+}
+
+/* ---------- feedback (centered, large) ---------- */
+#feedback {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem; /* bigger */
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  z-index: 100; /* above everything */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#feedback.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.2);
 }
 
 /* ---------- game grid ---------- */
-/* Use viewport units carefully so everything fits */
 #game-grid {
   position: relative;
   display: flex;
@@ -57,14 +73,14 @@ html, body {
   align-items: center;
   width: 100%;
   /* Reserve space for top/bottom UI (score + feedback) */
-  height: calc(100vh - 80px); /* adjust if you change top/bottom sizes */
+  height: calc(100vh - 80px);
   padding: 10px;
   box-sizing: border-box;
 }
 
-/* card containers: constrained so two cards always fit */
+/* card containers */
 .card-container {
-  flex: 0 0 calc(50% - 18px); /* two cards side-by-side with gap */
+  flex: 0 0 calc(50% - 18px);
   height: 100%;
   display: flex;
   justify-content: center;
@@ -75,7 +91,6 @@ html, body {
   overflow: hidden;
 }
 
-/* image sizing: ensure it never forces container bigger */
 .card-container img {
   display: block;
   width: auto;
@@ -88,7 +103,6 @@ html, body {
   transition: transform 0.15s ease, filter 0.15s ease;
 }
 
-/* smaller touch scale */
 .card-container img:active { transform: scale(0.97); }
 
 /* animation */
@@ -96,11 +110,10 @@ html, body {
 @keyframes pop { 0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)} }
 
 /* ---------- responsiveness ---------- */
-/* Narrow screens — stack vertically and reduce heights */
 @media (max-width: 800px), (max-height: 500px) {
   #game-grid {
     flex-direction: column;
-    height: calc(100vh - 110px); /* more vertical room */
+    height: calc(100vh - 110px);
     gap: 10px;
     padding: 8px;
   }
@@ -108,21 +121,20 @@ html, body {
   .card-container {
     flex: 0 0 auto;
     width: calc(100% - 20px);
-    height: 48%; /* two stacked cards ~ 48% each => both fit */
+    height: 48%;
     margin: 0 auto;
   }
 
   .card-container img { max-width: 100%; max-height: 100%; }
 }
 
-/* Very short screens (landscape phones) — force smaller images */
 @media (max-height: 420px) {
   #game-grid { height: calc(100vh - 70px); }
   .card-container { height: 44%; }
-  #score, #sound-btn, #replay-sound { font-size: 0.95rem; padding: 6px; }
+  #top-bar { gap: 12px; font-size: 0.95rem; }
+  #replay-sound { padding: 6px 8px; }
 }
 
-/* Safety: clamp sizes on very large screens so image doesn't become enormous */
 @media (min-width: 1400px) {
   .card-container { flex: 0 0 40%; max-width: 560px; }
 }
